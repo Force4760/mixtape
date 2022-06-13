@@ -84,7 +84,10 @@ proc process*(p: Program): bool =
             p.tape.setRand()
         of '0': 
             # Set cell to 0
-            p.tape.set0()  
+            p.tape.set0()
+        of '1', '2', '3', '4', '5', '6', '7', '8', '9': 
+            # Repeat the last operation n times
+            p.tape.repeatLast(parseSingleInt(c))
         of '\'': 
             # Set cell to input char
             p.tape.setCurrent(parseSingleChar())

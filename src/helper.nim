@@ -99,6 +99,25 @@ proc parseSingleChar*(): Byte =
 
     return toByte(str[0])
 
+# Parse a single int character into it's integer value
+# Defaults to 0
+# 0 -> 0  |  a -> 0  |  : -> 0  |  ...
+# 1 -> 1
+# ......
+# 9 -> 9
+proc parseSingleInt*(c: char): int =
+    case c:
+    of '1': 1
+    of '2': 2
+    of '3': 3
+    of '4': 4
+    of '5': 5
+    of '6': 6
+    of '7': 7
+    of '8': 8
+    of '9': 9
+    else:   0
+
 # Print a value without a new line
 proc print*[T](s: T) =
     stdout.write s

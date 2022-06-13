@@ -10,6 +10,7 @@ import helper
 type Tape* = ref object
     tape: array[256, Byte]
     head: Byte
+    last: char
 
 # Constructor for the tape type
 proc newTape*(): Tape =
@@ -17,7 +18,7 @@ proc newTape*(): Tape =
     for i in 0..255:
         tape[i] = 0
 
-    Tape(tape: tape, head: 0)
+    Tape(tape: tape, head: 0, last: ' ')
 
 
 ########################################
@@ -32,6 +33,7 @@ proc newTape*(): Tape =
 #          ^                        ^
 proc down* (t: Tape) = 
     t.tape[t.head] = dec t.tape[t.head]
+    t.last = '-'
 
 # Increment the current cell value
 #
@@ -41,6 +43,7 @@ proc down* (t: Tape) =
 #          ^                        ^
 proc up*(t: Tape) = 
     t.tape[t.head] = inc t.tape[t.head]
+    t.last = '+'
 
 # Decrement the head of the tape
 #
@@ -50,6 +53,7 @@ proc up*(t: Tape) =
 #          ^                  ^
 proc left*(t: Tape) = 
     t.head = dec t.head
+    t.last = '{'
 
 # Increment the head of the tape
 #
@@ -59,7 +63,19 @@ proc left*(t: Tape) =
 #          ^                              ^
 proc right*(t: Tape) = 
     t.head = inc t.head
+    t.last = '}'
 
+proc doLast*(t: Tape) =
+    case t.last:
+    of '+': t.up()
+    of '-': t.down()
+    of '{': t.left()
+    of '}': t.right()
+    else: discard
+
+proc repeatLast*(t: Tape, n: int) =
+    for i in 0..<n:
+        t.doLast()
 
 ########################################
 # TAPE GETTERS AND SETTERS
