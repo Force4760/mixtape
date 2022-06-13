@@ -31,7 +31,7 @@ func toByte*(c: char): Byte =
 ########################################
 
 # maximum value a Point coordinate in a Grid can hold
-const maxG* = 30 - 1
+const maxG* = 256 - 1
 
 type GridArray* = array[maxG + 1, array[maxG + 1, char]]
 

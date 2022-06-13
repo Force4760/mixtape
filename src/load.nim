@@ -21,9 +21,9 @@ proc load*(path: string): Program =
 
     # Create a grid to store every character
     var grid: GridArray
-    for i in 0..<maxG:
+    for i in 0..maxG:
         let lineI = f.lineDef("")
-        for j in 0..<maxG:
+        for j in 0..maxG:
             grid[i][j] = lineI.charDef(j, ' ')
 
     # Create a Program from the grid and return it

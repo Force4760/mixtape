@@ -68,12 +68,14 @@ proc right*(t: Tape) =
 # Set the current cell to a given byte value
 proc setCurrent*(t: Tape, b: Byte) =
     t.tape[t.head] = b
-    
-proc setCurrent*(t: Tape, c: char) =
-    t.tape[t.head] = toByte(c)
 
 proc setCurrent*(t: Tape, i: int) =
     t.tape[t.head] = toByte(i)
+
+# Set the current cell and move right
+proc setCurrentStr*(t: Tape, c: char) =
+    t.tape[t.head] = toByte(c)
+    t.right()
 
 # Set the current cell to a random byte value
 proc setRand*(t: Tape) =
