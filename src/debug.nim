@@ -1,5 +1,6 @@
 import os
 import illwill
+import program
 
 ########################################
 # Initialize full screen
@@ -19,9 +20,9 @@ var tb = newTerminalBuffer(terminalWidth(), terminalHeight())
 # ┌─ Info ───────────┐                                                                                                                                             
 # │  Head: xxx       │                                                                                                                                             
 # │  x, y: xxx, xxx  │                                                                                                                                             
-# │  Curr: x         │                                                                                                                                             
+# │  Str?: x         │                                                                                                                                             
 # └──────────────────┘
-proc drawInfo(x, y: int, head, coordX, coordY, curr: string) = 
+proc drawInfo(x, y: int, head, coordX, coordY, isStr: string) = 
     tb.setForegroundColor(fgWhite, true)
     tb.setBackgroundColor(bgNone)
 
@@ -29,11 +30,11 @@ proc drawInfo(x, y: int, head, coordX, coordY, curr: string) =
     tb.write(x+2, y, fgGreen, " Info ")
     tb.write(x+3, y+1, fgWhite, "Head: ")
     tb.write(x+3, y+2, fgWhite, "x, y: ")
-    tb.write(x+3, y+3, fgWhite, "Curr: ")
+    tb.write(x+3, y+3, fgWhite, "Str?: ")
     
     tb.write(x+9, y+1, fgGreen, head)
     tb.write(x+9, y+2, fgGreen, coordX, fgWhite, ", ", fgGreen, coordY)
-    tb.write(x+9, y+3, fgGreen, curr)
+    tb.write(x+9, y+3, fgGreen, isStr)
 
 #┌─ Tape ────────────────────────┐                                                                                                                            
 #│     ┌─────┐┌─────┐┌─────┐     │                                                                                                                            
@@ -54,7 +55,7 @@ proc drawTape(x, y: int, val1, val2, val3: string) =
 
     tb.write(x+8,  y+2, fgGreen, val1)
     tb.write(x+15, y+2, fgGreen, val2)
-    tb.write(x+22, y+2, fgGreen, val2)
+    tb.write(x+22, y+2, fgGreen, val3)
 
     tb.write(x+2,  y+2, fgGreen, "...")
     tb.write(x+28,  y+2, fgGreen, "...")
@@ -80,19 +81,30 @@ proc drawGrid(x, y: int, curr, up, right, down, left: string) =
 
     tb.write(x+5,  y+2, fgGreen, curr)
 
+proc waitKey() =
+  while true:
+    if getKey() == Key.Enter:
+      break
 
-# 4. This is how the main event loop typically looks like: we keep polling for
-# user input (keypress events), do something based on the input, modify the
-# contents of the terminal buffer (if necessary), and then display the new
-# frame.
-while true:
-  tb.setForegroundColor(fgWhite, true)
-  tb.drawRect(0, 0, 36, 11)
-  drawInfo(2, 1, "100", "101", "102", "c")
-  drawgrid(24, 1, "c", "u", "r", "d", "l")
-  drawTape(2, 6, "100", "101", "102")
+    sleep(20)
 
-  tb.display()
-  sleep(20)
+proc debugRun*(p: Program) =
+  while true:
+    # Get the relevant debug data
+    let (head, prev, curr, next, x, y, ch, isStr) = p.debug()
 
+    # Draw the UI
+    tb.setForegroundColor(fgWhite, true)
+    tb.drawRect(0, 0, 36, 11)
+    drawInfo(2, 1, $head, $x, $y, $isStr)
+    drawgrid(24, 1, $ch, "u", "r", "d", "l")
+    drawTape(2, 6, $prev, $curr, $next)
 
+    tb.display()
+    waitKey()
+    
+    let isContinue = p.next()
+    if not isContinue:
+      break
+
+  exitProc()

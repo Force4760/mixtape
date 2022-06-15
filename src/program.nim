@@ -128,16 +128,30 @@ proc process*(p: Program): bool =
     # Keep the program running (true === don't stop)
     return true
 
+# Run one step of the program o
+# true  === continues
+# false === stop
+proc next*(p: Program): bool =
+    var isContinue = true
+    if p.isStrMode:
+        p.processStr()
+    else: 
+        isContinue = p.process()
+
+    p.grid.move()
+    return isContinue
 
 # Run the full Program
 # Stops on ! or on an unknown character
 proc run*(p: Program) =
     while true:
-        if p.isStrMode:
-            p.processStr()
-        else: 
-            let isContinue = p.process()
-            if not isContinue: 
-                break
-            
-        p.grid.move()
+        let isContinue = p.next()
+        if not isContinue:
+            break
+
+
+proc debug*(p: Program): (Byte, Byte, Byte, Byte, int, int, char, bool) =
+    let (head, prev, curr, next) = p.tape.debug()
+    let (x, y, ch) = p.grid.debug()
+
+    (head, prev, curr, next, x, y, ch, p.isStrMode)

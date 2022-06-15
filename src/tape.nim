@@ -31,7 +31,7 @@ proc newTape*(): Tape =
 # |  0  | 110 |  0  |  ->  |  0  | 109 |  0  |
 # +-----+-----+-----+      +-----+-----+-----+
 #          ^                        ^
-proc down* (t: Tape) = 
+proc down* (t: Tape) =
     t.tape[t.head] = dec t.tape[t.head]
     t.last = '-'
 

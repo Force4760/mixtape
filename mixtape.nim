@@ -1,4 +1,4 @@
-import src/program, src/load
+import src/program, src/load, src/debug
 
 # Create a program from a given file and run it
 proc mixtape(path: string = "main.mt", debug: bool = false) =
@@ -6,7 +6,7 @@ proc mixtape(path: string = "main.mt", debug: bool = false) =
     try:
         prog = load(path)
 
-        if debug: prog.run()
+        if debug: prog.debugRun()
         else:     prog.run()
 
     except Exception as e:

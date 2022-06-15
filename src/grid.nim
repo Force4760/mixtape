@@ -102,5 +102,5 @@ proc getCoordStr*(g: Grid): string =
 # DEBUG
 ########################################
 
-proc debug*(g: Grid): (int, int, Direction, char) =
-    (g.coord.x, g.coord.y, g.direction, g.getCurrent())
+proc debug*(g: Grid): (int, int, char) =
+    (g.coord.x, g.coord.y, g.getCurrent())
