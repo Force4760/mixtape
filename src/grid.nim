@@ -82,7 +82,7 @@ proc moveTo*(g: Grid, x, y: int) =
     g.coord = (x mod 30, y mod 30)
 
 ########################################
-# GETTERS
+# GETTERS | SETTERS | OUTPUT
 ########################################
 
 # Get the character at coordinates (X, Y)
@@ -96,3 +96,11 @@ proc getCurrent*(g: Grid): char =
 # String representation of the grid coordinate
 proc getCoordStr*(g: Grid): string = 
     $g.coord
+
+
+########################################
+# DEBUG
+########################################
+
+proc debug*(g: Grid): (int, int, Direction, char) =
+    (g.coord.x, g.coord.y, g.direction, g.getCurrent())

@@ -1,15 +1,18 @@
 import src/program, src/load
 
 # Create a program from a given file and run it
-proc main(path: string) =
+proc mixtape(path: string = "main.mt", debug: bool = false) =
     var prog: Program
     try:
         prog = load(path)
-    except Exception as e:
-        echo e.msg
-        return
 
-    prog.run()
+        if debug: prog.run()
+        else:     prog.run()
+
+    except Exception as e:
+        echo "\e[0;31m" & e.msg & "\e[0m"
+    
 
 when isMainModule:
-    main("t.txt")
+    import cligen
+    dispatch(mixtape)

@@ -129,3 +129,22 @@ proc getNext*(t: Tape): Byte =
         t.tape[0]
     else:
         t.tape[t.head+1]
+
+# Get the value of the previous cell
+#
+# +-----+-----+-----+
+# |  0  | 110 | 200 |  ->  200  
+# +-----+-----+-----+
+#          ^
+proc getPrev*(t: Tape): Byte =
+    if t.head == 0:
+        t.tape[255]
+    else:
+        t.tape[t.head-1]
+
+
+########################################
+# DEBUG
+########################################
+proc debug*(t: Tape): (Byte, Byte, Byte, Byte) =
+    (t.head, t.getPrev(), t.getCurrent(), t.getNext())

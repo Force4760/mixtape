@@ -132,16 +132,12 @@ proc process*(p: Program): bool =
 # Run the full Program
 # Stops on ! or on an unknown character
 proc run*(p: Program) =
-    try:
-        while true:
-            if p.isStrMode:
-                p.processStr()
-            else: 
-                let isContinue = p.process()
-                if not isContinue: 
-                    break
+    while true:
+        if p.isStrMode:
+            p.processStr()
+        else: 
+            let isContinue = p.process()
+            if not isContinue: 
+                break
             
-            p.grid.move()
-
-    except Exception as e:
-        echo e.msg
+        p.grid.move()
