@@ -17,6 +17,10 @@ hideCursor()
 var tb = newTerminalBuffer(terminalWidth(), terminalHeight())
 
 
+########################################
+# COMPONENTS
+########################################
+
 # ┌─ Info ───────────┐                                                                                                                                             
 # │  Head: xxx       │                                                                                                                                             
 # │  x, y: xxx, xxx  │                                                                                                                                             
@@ -69,7 +73,6 @@ proc drawTape(x, y: int, val1, val2, val3: string) =
 proc drawGrid(x, y: int, curr, up, right, down, left: string) = 
     tb.setForegroundColor(fgWhite, true)
 
-
     tb.drawRect(x, y, x+10, y+4)
     
     tb.write(x+2,  y,   fgGreen, " Grid ")
@@ -81,6 +84,21 @@ proc drawGrid(x, y: int, curr, up, right, down, left: string) =
 
     tb.write(x+5,  y+2, fgGreen, curr)
 
+# Next: Enter                                                                                           
+# Exit: Ctrl + C
+proc drawBorderAndText(x, y: int) = 
+    tb.setForegroundColor(fgWhite, true)
+
+    tb.drawRect(x, y, x+36, y+11)
+
+    tb.write(x+39, y+1, fgWhite, "Next: ", fgGreen, "Enter")
+    tb.write(x+39, y+2, fgWhite, "Exit: ", fgGreen, "Ctrl + C")
+
+########################################
+# SCREEN LOOP
+########################################
+
+# Stop program execution until the Enter key is pressed
 proc waitKey() =
   while true:
     if getKey() == Key.Enter:
@@ -88,6 +106,7 @@ proc waitKey() =
 
     sleep(20)
 
+# Run the program in debug mode
 proc debugRun*(p: Program) =
   while true:
     # Get the relevant debug data
@@ -95,15 +114,17 @@ proc debugRun*(p: Program) =
 
     # Draw the UI
     tb.setForegroundColor(fgWhite, true)
-    tb.drawRect(0, 0, 36, 11)
+    drawBorderAndText(0, 0)
     drawInfo(2, 1, $head, xy, $isStr)
     drawgrid(24, 1, $ch[0], $ch[1], $ch[2], $ch[3], $ch[4])
     drawTape(2, 6, $prev, $curr, $next)
 
+    # Draw the output
     tb.write(2, 12, fgWhite, output)
     tb.display()
     waitKey()
     
+    # Process the current character and check if the program should stop
     let isContinue = p.next(false)
     if not isContinue:
       break

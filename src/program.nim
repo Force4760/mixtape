@@ -169,7 +169,7 @@ proc run*(p: Program) =
 
 
 proc debug*(p: Program): (
-    Byte, Byte, Byte, Byte, string, (char, char, char, char, char), bool, string
+    Byte, Byte, Byte, Byte, string, array[5, char], bool, string
 ) =
     let (head, prev, curr, next) = p.tape.debug()
     let (xy, chars) = p.grid.debug()

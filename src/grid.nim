@@ -102,17 +102,16 @@ proc getCoordStr*(g: Grid): string =
 # l c r
 #   d
 # returns (c, u, r, d, l)
-proc getCross*(g: Grid): (char, char, char, char, char) = 
+proc getCross*(g: Grid): array[5, char] = 
     let c = g.getXY(g.coord)
     let u = g.getXY(g.coord.up())
     let r = g.getXY(g.coord.right())
     let d = g.getXY(g.coord.down())
     let l = g.getXY(g.coord.left())
-    (c, u, r, d, l)
+    [c, u, r, d, l]
 
 ########################################
 # DEBUG
 ########################################
-
-proc debug*(g: Grid): (string, (char, char, char, char, char)) =
+proc debug*(g: Grid): (string, array[5, char]) =
     (g.getCoordStr(), g.getCross())

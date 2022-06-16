@@ -18,6 +18,6 @@ A Tape is a 1D grid of 256 cells that can hold a byte (0 to 255).
 - [X] Write example programs
 - [X] Write documentation
 - [X] CLI
-- [ ] Improve output and error messages
-- [ ] Add debug mode
+- [X] Improve output and error messages
+- [X] Add debug mode
 - [X] Implement 1-9 as repetition commands
