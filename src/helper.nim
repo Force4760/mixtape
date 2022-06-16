@@ -41,7 +41,7 @@ type Point* = tuple
 
 # String representation of a point (x, y)
 proc `$`*(p: Point): string =
-    fmt"({p.x}, {p.y})"
+    fmt"{p.x}, {p.y}"
 
 # Move the point Up (wrapping it around)
 func up*(p: Point): Point =
@@ -117,7 +117,3 @@ proc parseSingleInt*(c: char): int =
     of '8': 8
     of '9': 9
     else:   0
-
-# Print a value without a new line
-proc print*[T](s: T) =
-    stdout.write s

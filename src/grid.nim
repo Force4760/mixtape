@@ -79,28 +79,40 @@ proc move*(g: Grid) =
 
 # Set the coordinate to a given (x, y) point 
 proc moveTo*(g: Grid, x, y: int) =
-    g.coord = (x mod 30, y mod 30)
+    g.coord = (x mod maxG, y mod maxG)
 
 ########################################
 # GETTERS | SETTERS | OUTPUT
 ########################################
 
 # Get the character at coordinates (X, Y)
-proc getXY*(g: Grid, x, y: int): char = 
-    g.grid[y mod 30][x mod 30]
+proc getXY*(g: Grid, p: Point): char = 
+    g.grid[p.y][p.x]
 
-# Get the character ate the current coordinate
+# Get the character at the current coordinate
 proc getCurrent*(g: Grid): char = 
-    g.grid[g.coord.y][g.coord.x]
+    g.getXY(g.coord)
 
 # String representation of the grid coordinate
 proc getCoordStr*(g: Grid): string = 
     $g.coord
 
+# Get the character at the current coordinate and it's surroundings
+#   u
+# l c r
+#   d
+# returns (c, u, r, d, l)
+proc getCross*(g: Grid): (char, char, char, char, char) = 
+    let c = g.getXY(g.coord)
+    let u = g.getXY(g.coord.up())
+    let r = g.getXY(g.coord.right())
+    let d = g.getXY(g.coord.down())
+    let l = g.getXY(g.coord.left())
+    (c, u, r, d, l)
 
 ########################################
 # DEBUG
 ########################################
 
-proc debug*(g: Grid): (int, int, char) =
-    (g.coord.x, g.coord.y, g.getCurrent())
+proc debug*(g: Grid): (string, (char, char, char, char, char)) =
+    (g.getCoordStr(), g.getCross())

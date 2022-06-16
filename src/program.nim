@@ -10,6 +10,7 @@ type Program* = ref object
     grid: Grid
     tape: Tape
     isStrMode: bool
+    output: string
 
 # Constructor for the program type
 proc newProgram*(grid: GridArray): Program =
@@ -17,8 +18,16 @@ proc newProgram*(grid: GridArray): Program =
         grid: newGrid(grid),
         tape: newTape(),
         isStrMode: false,
+        output: ""
     )
     
+# Print a value without a new line
+proc print[T](p: Program, s: T, isOutput: bool) =
+    p.output &= s
+    
+    if isOutput: 
+        stdout.write s
+
 # Process a given character according to the current state of the program
 # Every character will be converted to byte, added to the tape and the head will move right
 # " will not be added and will terminate the str mode
@@ -29,10 +38,12 @@ proc processStr*(p: Program) =
     else:
         p.tape.setCurrentStr(c)
 
+    p.grid.move()
+
 # Process a given character according to the current state of the program
 # Unknown characters will throw an exception
 # Returns a bool representing if the execution of the program should continue
-proc process*(p: Program): bool =
+proc process*(p: Program, isOutput: bool): bool =
     let c = p.grid.getCurrent()
     case c:
         # GRID
@@ -62,6 +73,7 @@ proc process*(p: Program): bool =
             let x = p.tape.getCurrent()
             let y = p.tape.getNext()
             p.grid.moveTo(x, y)
+            return true
 
         # TAPE
         of '{':
@@ -96,12 +108,17 @@ proc process*(p: Program): bool =
             p.tape.setCurrent(parseInteger())
         of '$': 
             # Print cell as char
-            print char(p.tape.getCurrent())
+            p.print(
+                char(p.tape.getCurrent()), 
+                isOutput,
+            )
         of '#': 
             # Print cell as int
-            print p.tape.getCurrent()
+            p.print(
+                $p.tape.getCurrent(), 
+                isOutput,
+            )
         
-
         # RESET, END and MODE
         of '"':
             p.isStrMode = true
@@ -122,8 +139,10 @@ proc process*(p: Program): bool =
             # Unknown character
             raise newException(
                 ValueError,
-                fmt"Found and unknown character '{c}' at coordinates {p.grid.getCoordStr()}",
+                fmt"Found and unknown character '{c}' at coordinates ({p.grid.getCoordStr()})",
             )
+
+    p.grid.move()
 
     # Keep the program running (true === don't stop)
     return true
@@ -131,27 +150,28 @@ proc process*(p: Program): bool =
 # Run one step of the program o
 # true  === continues
 # false === stop
-proc next*(p: Program): bool =
+proc next*(p: Program, isOutput: bool): bool =
     var isContinue = true
     if p.isStrMode:
         p.processStr()
     else: 
-        isContinue = p.process()
+        isContinue = p.process(isOutput)
 
-    p.grid.move()
     return isContinue
 
 # Run the full Program
 # Stops on ! or on an unknown character
 proc run*(p: Program) =
     while true:
-        let isContinue = p.next()
+        let isContinue = p.next(true)
         if not isContinue:
             break
 
 
-proc debug*(p: Program): (Byte, Byte, Byte, Byte, int, int, char, bool) =
+proc debug*(p: Program): (
+    Byte, Byte, Byte, Byte, string, (char, char, char, char, char), bool, string
+) =
     let (head, prev, curr, next) = p.tape.debug()
-    let (x, y, ch) = p.grid.debug()
+    let (xy, chars) = p.grid.debug()
 
-    (head, prev, curr, next, x, y, ch, p.isStrMode)
+    (head, prev, curr, next, xy, chars, p.isStrMode, p.output)
